@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calcolatrice RPN</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container" style="margin-top: 30px">
+    <h1 class="text-center">Calcolatrice RPN</h1>
+    <div class="griglia" style="margin-top: 15px">
+        <div class="disp container-fluid" id="disp"></div>
+        <div class="input">
+            <input type="text" class="form-control" style="text-align: right" id="inp">
+        </div>
+
+        <div class="enter">
+            <button type="button" class="btn btn-primary btn-block font-weight-bold" onclick="enter()" id="enter">Enter</button>
+        </div>
+
+
+
+        <div class="plus">
+            <button type="button" class="btn btn-outline-dark btn-block font-weight-bold" onclick="process2('plus')" id="plus">&plus;</button>
+        </div>
+        <div class="minus">
+            <button type="button" class="btn btn-outline-dark btn-block font-weight-bold" onclick="process2('minus')" id="minus">&minus;</button>
+        </div>
+        <div class="times">
+            <button type="button" class="btn btn-outline-dark btn-block font-weight-bold" onclick="process2('times')" id="times">&times;</button>
+        </div>
+        <div class="divided">
+            <button type="button" class="btn btn-outline-dark btn-block font-weight-bold" onclick="process2('divided')" id="divided">&divide;</button>
+        </div>
+        <div class="sqrt">
+            <button type="button" class="btn btn-outline-dark btn-block font-weight-bold" onclick="process('sqrt')" id="sqrt">&radic;</button>
+        </div>
+        <div class="inverse">
+            <button type="button" class="btn btn-outline-dark btn-block" onclick="process('inverse')" id="inverse">1/x</button>
+        </div>
+        <div class="log">
+            <button type="button" class="btn btn-outline-dark btn-block " onclick="process('log')" id="log">log</button>
+        </div>
+        <div class="exp">
+            <button type="button" class="btn btn-outline-dark btn-block" onclick="process('exp')" id="exp">exp</button>
+        </div>
+        <div class="canc">
+            <button type="button" class="btn btn-danger btn-block font-weight-bold" onclick="reset()" id="canc">C</button>
+        </div>
+        <div class="back">
+            <button type="button" class="btn btn-outline-dark btn-block font-weight-bold" onclick="drop()" id="back">&larr;</button>
+        </div>
+
+    </div>
+</div>
+
+
+    <script>
+        let stack = [];
+        let error = false;
+        let input = document.getElementById("inp");
+        let display = document.getElementById("disp");
+
+        function process(op) {
+            if(error) {
+                update();
+            }else{
+                if(stack.length<1) {
+                    error = true;
+                    update();
+                }else{
+                    let x = Number(stack.pop());
+                    let res;
+                    if(op=="sqrt"){
+                        res = Math.sqrt(x);
+                    }
+                    else if(op=="inverse") {
+                        res = 1/x;
+                    }
+                    else if(op=="log") {
+                        res = Math.log(x);
+                    }
+                    else if(op=="exp") {
+                        res = Math.exp(x);
+                    }
+                    if(Number.isNaN(res)){
+                        error = true;
+                        update();
+                    }else{
+                        stack.push(res);
+                        update();
+                    }
+                }
+            }
+        }
+
+        function process2(op) {
+            if(error) {
+                update();
+            }else{
+                if(stack.length<2) {
+                    error = true;
+                    update();
+                }else{
+                    let x = Number(stack[stack.length-2]);
+                    let y = Number(stack[stack.length-1]);
+                    let res;
+                    if(op=="plus"){
+                        res = x+y;
+                    }
+                    else if(op=="minus") {
+                        res = x-y;
+                    }
+                    else if(op=="times") {
+                        res = x*y;
+                    }
+                    else if(op=="divided") {
+                        res = x/y;
+                    }
+                    if(Number.isNaN(res)){
+                        error = true;
+                        update();
+                    }else{
+                        stack.push(res);
+                        update();
+                    }
+                }
+            }
+        }
+
+        function update() {
+            if(error){
+                display.innerHTML = `<h1 class="display-3" style="color:red;font-weight:bold;font-family:'Courier New'">ERROR</h1>`;
+            }else{
+                let s = "";
+                if(stack.length <= 5){
+                    for(let i=0; i<stack.length; ++i){
+                        if(i==stack.length-1){
+                            s += `<div style="font-size: 32px">${stack[i]}</div>`;
+                        }else{
+                            s += `<div>${stack[i]}</div>`;
+                        }
+                    }
+                }else{
+                    for(let i=stack.length-5; i<stack.length; ++i){
+                        if(i==stack.length-1){
+                            s += `<div style="font-size: 32px">${stack[i]}</div>`;
+                        }else{
+                            s += `<div>${stack[i]}</div>`;
+                        }
+                    }
+                }
+                display.innerHTML = s;
+            }
+        }
+
+        function enter() {
+            if(Number.isNaN(Number(input.value))){
+                error = true;
+            }else{
+                stack.push(input.value);
+            }
+            input.value = "";
+            update();
+        }
+
+        function reset() {
+            stack = [];
+            input.value = "";
+            error = false;
+            update();
+        }
+
+        function drop() {
+            if(stack.length==0){
+                error = true;
+            }
+            if(error==false){
+                stack.pop();
+            }
+            update();
+        }
+
+
+
+
+
+
+
+
+    </script>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+</body>
+</html>

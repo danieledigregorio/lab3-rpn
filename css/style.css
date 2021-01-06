@@ -1,0 +1,39 @@
+.griglia {
+    display: grid;
+
+    grid-template-rows: 1.5em 1.5em 1.5em 1.5em 1.5em 1.5em;
+    grid-template-columns: auto 3em 3em;
+
+    grid-row-gap: 1.3em;
+    grid-column-gap: 10px;
+
+    grid-template-areas:
+        "casella invio invio"
+        "schermo piu meno"
+        "schermo per diviso"
+        "schermo radice inverso"
+        "schermo logaritmo esponenziale"
+        "schermo cancella indietro";
+}
+
+.disp {
+    grid-area: schermo;
+    background-color: lightyellow;
+    border: solid lightgray 1px;
+    border-radius: 3px;
+    padding-top: 5px;
+    padding-right: 25px;
+    text-align: right;
+}
+.input {grid-area: casella}
+.enter {grid-area: invio}
+.plus {grid-area: piu}
+.minus {grid-area: meno}
+.times {grid-area: per}
+.divided {grid-area: diviso}
+.sqrt {grid-area: radice}
+.inverse {grid-area: inverso}
+.log {grid-area: logaritmo}
+.exp {grid-area: esponenziale}
+.canc {grid-area: cancella}
+.back {grid-area: indietro}
